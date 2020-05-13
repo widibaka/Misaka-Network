@@ -33,6 +33,7 @@ Chat Engine Website made by otakus (LOL)
 - Instalasi Otomatis
 - User level
 - Informasi member yang online/offline
+- Cron Job untuk mantenance
 ************
 # Sumber
 -  Info <https://github.com/widibaka/Misaka-Network>

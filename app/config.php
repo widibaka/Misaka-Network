@@ -9,4 +9,4 @@ die ("Koneksi dengan database gagal: ".mysql_connect_error());
 }
 
 # Membuat base_url otomatis mengikuti directory install
-$base_url = "http://localhost/misaka_network/";
+$base_url = "http://localhost/misaka_network/Misaka-Network/";
