@@ -1,5 +1,5 @@
 # Misaka-Network
-Chat Engine Website made by otakus
+Chat Engine Website made by otakus (LOL)
 ************
 # Requirements
 - Server Apache
@@ -10,18 +10,19 @@ Chat Engine Website made by otakus
 - Buka file ini "app/config.php" untuk meng-edit profil database kamu.
 - Import Misaka_Network.sql memakai phpmyadmin atau yang lainnya.
 ************
-# Penting!
+# Akun Login
 - username: widibaka
 - password: 123
 ************
 # Fitur
 - Standar chat engine; misal post, reply, delete pesan chat.
 # Dibangun Menggunakan
-* [CodeIgniter 3.1](http://codeigniter.com/) - Web Framework yang digunakan
-* [AdminLTE3 Template](https://adminlte.io/themes/AdminLTE) - Template tampilan yang digunakan
+* Native PHP
+* JS JQuery
+* JQuery Ajax
 ************
 # Disclaimer
-- Saya membuat ini sebagai bahan edukasi loh ya
+- Saya membuat ini sebagai bahan edukasi loh ya wkwkwk
 ************
 # Kontribusi & Donasi
 - Silakan hubungi WA 081226203761 untuk ngobrol dgn saya :)
