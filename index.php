@@ -9,7 +9,7 @@ include("app/auth.php"); //include auth.php file on all secure pages ?>
 <title>Selamat Datang di Misaka Network</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-<link rel="stylesheet" href="<?php echo $base_url ?>assets/css/style.css" />
+<link rel="stylesheet" href="<?php echo $base_url ?>assets/css/style.css?ver3" />
 <style type="text/css">
 
 	.content {
@@ -18,14 +18,13 @@ include("app/auth.php"); //include auth.php file on all secure pages ?>
 	}
 </style>
 </head>
-<body style="background-image: url(assets/img/Mikoto_color_2_final_logoed.jpg); background-size: cover; background-attachment: fixed; background-position: center top; background-repeat: no-repeat;">
+<body>
 <div class="loader-container">
 	<div class="loader"></div>
 </div>
-
-<div class="main-content " style="display: none; ">
-	<div class="form container" >
-		<div class="vertical-center" style="background: rgba(255, 255, 255, 0.7); padding: 5px 20px">
+<div class="h-100">
+	<div class="row justify-content-center main-content" style="display: none; ">
+		<div class="vertical-center" style="width: 100%">
 			<div class="content">
 				<p>Selamat datang <?php echo $_SESSION['riyousha']; ?>!</p>
 				<p>"Pilih Chatroom kamu." Misaka memberikan pilihan.</p>

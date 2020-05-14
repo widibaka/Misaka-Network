@@ -12,12 +12,9 @@ include("app/functions.php");
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <link rel="stylesheet" href="<?php echo $base_url ?>assets/css/style.css" />
 <style type="text/css">
-	.vertical-center{
-		max-width: 300px;
-	}
 </style>
 </head>
-<body style="background-image: url(assets/img/thumb-1920-209324.jpg); background-size: cover; background-attachment: fixed; background-position: center top; background-repeat: no-repeat;">
+<body>
 <?php
 	require('app/config.php');
     // If form submitted, insert values into the database.
@@ -30,6 +27,8 @@ include("app/functions.php");
 		$pasuwaado_confirm = stripslashes($_REQUEST['pasuwaado_confirm']);
 		$pasuwaado_confirm = mysqli_real_escape_string($koneksi,$pasuwaado_confirm);
 
+		$roguin_no_saigo = time();
+
 		//Checking is user existing in the database or not
         $query = "SELECT * FROM `riyousha` WHERE yuzaaneimu='$yuzaaneimu' and pasuwaado='$pasuwaado' LIMIT 1";
 		$result = mysqli_query($koneksi,$query) or die(mysql_error());
@@ -37,7 +36,7 @@ include("app/functions.php");
 
         if ( $pasuwaado === $pasuwaado_confirm AND $rows!=1) {
         	$iro = rand_color();
-        	$query = "INSERT into `riyousha` (yuzaaneimu, pasuwaado, iro) VALUES ('$yuzaaneimu', '$pasuwaado', '$iro')";
+        	$query = "INSERT into `riyousha` (yuzaaneimu, pasuwaado, iro, roguin_no_saigo) VALUES ('$yuzaaneimu', '$pasuwaado', '$iro', '$roguin_no_saigo')";
         	$result = mysqli_query($koneksi,$query);
         	if($result){
         	    echo '

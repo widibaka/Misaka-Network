@@ -16,25 +16,9 @@ if ( isset($_SESSION['riyousha']) ) {
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <link rel="stylesheet" href="<?php echo $base_url ?>assets/css/style.css" />
 <style type="text/css">
-	.login_container {
-	  height: auto;
-	}
-
-	.vertical-center {
-	  position: absolute;
-	  top: 50%;
-	  -ms-transform: translateY(-50%);
-	  transform: translateY(-50%);
-	  background: rgba(255, 255, 255, 0.7);
-	  border-radius: 10px;
-	  padding: 5px 30px 5px 30px;
-	}
-	.vertical-center{
-		max-width: 300px;
-	}
 </style>
 </head>
-<body style="background-image: url(assets/img/k3w679zndxi31.jpg); background-size: cover; background-attachment: fixed; background-position: center top; background-repeat: no-repeat;">
+<body">
 <?php
     // If form submitted, insert values into the database.
     if (isset($_POST['riyousha'])){
@@ -68,7 +52,7 @@ if ( isset($_SESSION['riyousha']) ) {
 </div>
 
 <div class="main-content " style="display: none; ">
-	<div class="form login_container" >
+	<div class="form container" >
 		<div class="vertical-center">
 			<h1>Log In</h1>
 			<form action="" method="post" name="login">

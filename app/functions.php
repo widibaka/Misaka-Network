@@ -78,7 +78,7 @@ function getTimeAgo( $tgl )
 
 // Semua user masukin ke dalam array
 $users = [];
-$query = "SELECT * FROM riyousha";
+$query = "SELECT * FROM `riyousha` ORDER BY `aidi` DESC";
 $result = mysqli_query($koneksi, $query);
 //mengecek apakah ada error ketika menjalankan query
 if(!$result){

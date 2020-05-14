@@ -52,7 +52,7 @@ if ( $current_riyousha_no_aidi != $row['riyousha_no_aidi'] ): //kalau chat-nya b
         $quoted_msg = $quote_array[2];
     ?>
     <a href="javascript:void(0)" onclick="scroll_to(<?= $quoted_msg_id ?>)" scroll_to="">
-    <li class="quoted-message mt-0" id="<?php echo $row['aidi']; ?>" style="border-color: <?= getColorById($users, $quoted_friend_id); ?>">
+    <li class="quoted-message mt-0" id="<?php echo $row['aidi']; ?>" style="border-color: <?= getColorById($users, $quoted_friend_id); ?>;">
                 <p class="font-weight-bold mt-0 mb-0"><?php echo getUsernameById($users, $quoted_friend_id); ?></p>
                 <p class="mt-0 mb-2">
                     <?php echo nl2br( // linebreak \n biar jadi <br> 
@@ -92,11 +92,11 @@ if ( $current_riyousha_no_aidi != $row['riyousha_no_aidi'] ): //kalau chat-nya b
             <?php endif ?>
         </div>
         <span class="control-pesan">
+            <a title="Balas pesan ini" href="javascript:void(0)" onclick="reply(<?= $row['riyousha_no_aidi'] ?>,<?= $row['aidi'] ?>)"><i class="fas fa-reply"></i></a>
             <?php if ( !empty($row['meseiji_no_nakami']) AND getIdByUsername($users, $_SESSION['riyousha']) == $row['riyousha_no_aidi'] ): 
             //tombol delete  hanya muncul kalo ID pengirim ppesan sama dgn user, dan pesan tidak kosong  ?>
                 <a title="Hapus pesan ini" href="javascript:void(0)" onclick="hapus(<?= $row['aidi'] ?>)"><i class="fas fa-trash"></i></a>
             <?php endif ?>
-            <a title="Balas pesan ini" href="javascript:void(0)" onclick="reply(<?= $row['riyousha_no_aidi'] ?>,<?= $row['aidi'] ?>)"><i class="fas fa-reply"></i></a>
         </span>
     </li>
 </ul>
@@ -106,7 +106,7 @@ if ( $current_riyousha_no_aidi != $row['riyousha_no_aidi'] ): //kalau chat-nya b
 
 $current_riyousha_no_aidi = $row['riyousha_no_aidi']; // update data yg ada di awal tadi
 
-if (empty($row['aidi'])) {
+if (is_null($row['aidi'])) {
     ?>
 <ul class="media-list">
     <li class="media kotak" id="<?php echo $row['aidi']; ?>">

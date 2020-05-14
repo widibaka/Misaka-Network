@@ -50,10 +50,13 @@ if ( isset($_POST['riyousha_no_aidi']) ) {
 <title>Misaka Network</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
- 	<link rel="stylesheet" href="<?php echo $base_url ?>assets/css/style.css">
+ 	<link rel="stylesheet" href="<?php echo $base_url ?>assets/css/style.css?v01">
  	<script src="https://kit.fontawesome.com/713db9fa6b.js" crossorigin="anonymous"></script>
 </head>
-<body class="light" style="background-image: url(../assets/img/mikoto-misaka-background-hd-4k-50729.jpg); background-size: cover; background-attachment: fixed; background-position: center top; background-repeat: no-repeat;">
+<style type="text/css">
+	/**{border: solid 1px red;}*/
+</style>
+<body class="light" onmouseover="nonaktifkan_bunyi()" onmouseout="aktifkan_bunyi()" >
 
 <!-- Audio File -->
 <div id="sound"></div>
@@ -62,20 +65,27 @@ if ( isset($_POST['riyousha_no_aidi']) ) {
 	<div class="loader"></div>
 </div>
 
-<div class="row main-content" style="display: none; ">
-    <div class="col-md-6 offset-md-1 col-sm-12">
+<div class="row main-content" style="display: none;">
+    <div class="col-md-3 offset-md-1 col-sm-12" id="member-online-container">
+    	<div class="member-online">
+    		<input type="text" id="search-member" class="mb-3 mt-2" placeholder="Cari member ..." style="height:22px">
+    		<table id="member-online" class="display col-sm-12 mb-2">
+    		</table>
+    	</div>
+    </div>
+    <div class="col-md-7 col-sm-12">
         <div class="comment-wrapper">
             <div class="panel-info">
                 <div class="panel-body">
                 	<div class="navbar-atas">
                 		<a class="navbar-item navigasi" alamat="../index.php" href="javascript:void(0)">Kembali</a>
                 		<a class="navbar-item" id="tombol_pengaturan" href="javascript:void(0)">Pengaturan</a>
+                		<a class="navbar-item" id="tombol_show_member" href="javascript:void(0)">Tampilkan Member</a>
                 		<a class="navbar-item navigasi" alamat="../logout.php" href="javascript:void(0)">Logout</a>
                 	</div>
                 	<div id="isi_pengaturan" style="display: none;">
                 		<a href='javascript:void(0)' class='switch_theme btn btn-info btn-sm'>Tema: Light</a>
                 		<a href='javascript:void(0)' class='notifikasi_suara btn btn-info btn-sm'>Suara: Hidup</a>
-                		
                 	</div>
                     <form action="" method="post" id="form_chat">
                     <textarea class="d-none" name="reply" id="reply"></textarea>
@@ -85,7 +95,7 @@ if ( isset($_POST['riyousha_no_aidi']) ) {
                              
                       </p>
                     </div>
-                    <textarea class="form-control" name="meseiji_no_nakami" id="meseiji_no_nakami" placeholder='"Lagi mikirin apa, sih? Tulis di sini ...", Misaka sedang merayu.' rows="3" autocomplete="off" type="text"></textarea>
+                    <textarea class="form-control" name="meseiji_no_nakami" id="meseiji_no_nakami" placeholder='Tulis di sini ...' rows="3" autocomplete="off" type="text"></textarea>
                     <input type="hidden" name="riyousha_no_aidi" id="riyousha_no_aidi" value="<?php echo getIdByUsername($users, $_SESSION['riyousha']) ?>"><br>
                     <button type="submit" class="btn btn-info float-right" id="but_post">Post</button>
                     </form>
@@ -109,14 +119,6 @@ if ( isset($_POST['riyousha_no_aidi']) ) {
         </div>
 
     </div>
-    <div class="col-md-4 col-sm-12">
-    	<div class="member-online">
-    		<?php 
-    		foreach ($users as $key => $value) : ?>
-    		<?php echo $value['yuzaaneimu']; ?><br>    		
-			<?php endforeach; ?>
-    	</div>
-    </div>
 
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -131,13 +133,29 @@ if ( isset($_POST['riyousha_no_aidi']) ) {
 /*
 * Ranah post pesan chat
 */
+
 $(document).ready(function() {
 
-	// Transisi halaman
-	$(".main-content").fadeIn("fast");
-	setTimeout(function() {
-		$('.loader-container').fadeOut("fast");
-	},500);
+	// Transisi halaman saat benar2 loaded
+	document.onreadystatechange = function () {
+	    if (document.readyState == "complete") {
+	        // Transisi halaman
+	        $(".main-content").fadeIn("fast");
+	        setTimeout(function() {
+	        	$('.loader-container').fadeOut("fast");
+	        },500);
+
+	        $("#meseiji_no_nakami").focus(); // fokus ke textarea lagi
+	    }
+	}
+
+	// pencarian member
+	$("#search-member").on("keyup", function() {
+	    var value = $(this).val().toLowerCase();
+	    $("#member-online tr").filter(function() {
+	      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+	    });
+	});
 
 	// button .navigasi kalau diklik akan menampilkan putih overlay
 	$(".navigasi").click(function(){
@@ -150,6 +168,8 @@ $(document).ready(function() {
 
 	// pertama update kolom chat dulu
 	updateMessages();
+	// update status online
+	setOnline();
 
 	// fokus ke text area langsung
 	$("#meseiji_no_nakami").focus();
@@ -180,6 +200,7 @@ $(document).ready(function() {
 			return;
 		}else {
 			e.preventDefault();
+			  	
 			$("#but_post").addClass("disabled");
 			$("#but_post").attr("disabled", "disabled");
 			$.ajax({
@@ -187,28 +208,55 @@ $(document).ready(function() {
 			  url: $(this).attr('action'),
 			  data: $(this).serialize(),
 			  success: function() {
-			    getMessagesIfSubmitedByUserHimself(); // update konten immediately
-			    $("#but_post").removeClass("disabled");
-			    cancel_reply(); // hilangkan reply-nya soalnya gak selamanya menjawab 1 message tertentu kan?
-			 $("#but_post").removeAttr("disabled");
-			 $('#meseiji_no_nakami').val("")
-			 $("#meseiji_no_nakami").focus();
+			  	notifikasi_suara = false; //matikan notifikasi
+			  	updateMessages();
+			  	$("#but_post").removeClass("disabled");
+			  	cancel_reply(); // hilangkan reply-nya soalnya gak selamanya menjawab 1 message tertentu kan?
+			  	$("#but_post").removeAttr("disabled");
+			  	$('#meseiji_no_nakami').val("")
+			  	$("#meseiji_no_nakami").focus();
+			  	setTimeout( function(){
+			  		notifikasi_suara = true; //hidupkan notifikasi lagi setelah 3 det
+			  	},3000 );
+			  	
 			  },
 			  fail: function(xhr, textStatus, errorThrown){
 			     alert('Tolong isi dengan baik!');
 			  }
 			  
-			}
-			);
+			});
+
+
 		}
 	});	
 
 
-	
-
-
 });
 
+
+
+function aktifkan_bunyi(){
+	notifikasi_suara = true; // kalau mouseout, dia bunyi
+}
+
+function nonaktifkan_bunyi(){
+	notifikasi_suara = false;// kalau mouseover, dia ga bunyi
+	
+}	
+// variable - variable penting
+
+var notifikasi_suara = false;
+var panjang_data = 0; // nilai inisialisasi utk membandingkan jumlah message.
+var limit_pesan = 50; // jumlah awal message yang di-load 
+var add = 50; // jumlah pesan yang akan ditambahkan pas mencet tombol
+var riyousha_no_aidi = <?php echo getIdByUsername($users,$_SESSION['riyousha']) ?>;
+
+
+function setOnline(){
+	$.get("status_online.php?riyousha_no_aidi="+riyousha_no_aidi, function(data){
+		$("#member-online").html(data);
+	});
+}
 
 function hapus(aidi){
 	var txt;
@@ -219,7 +267,7 @@ function hapus(aidi){
 	    success: function(data) {
 	      updateMessages();
 	    },
-	    failure: function() {
+	    fail: function() {
 	    	alert("Pesan gagal dihapus");
 	    }
 	  });
@@ -229,23 +277,23 @@ function hapus(aidi){
 
 function goyangin(msg_id){
 	$("#"+msg_id).animate({
-      marginLeft: '-40px',
-      marginRight: '-10px',
+      marginLeft: '-50px',
+      marginRight: '-15px',
       opacity: '0.6'
     });
     $("#"+msg_id).animate({
-      marginLeft: '-50px',
-      marginRight: '0px',
+      marginLeft: '-55px',
+      marginRight: '-10px',
       opacity: '1'
     });
 	$("#"+msg_id).animate({
-      marginLeft: '-40px',
-      marginRight: '-10px',
+      marginLeft: '-50px',
+      marginRight: '-15px',
       opacity: '0.6'
     });
     $("#"+msg_id).animate({
-      marginLeft: '-50px',
-      marginRight: '0px',
+      marginLeft: '-55px',
+      marginRight: '-10px',
       opacity: '1'
     });
 }
@@ -263,14 +311,22 @@ function scroll_to(element_id) {
 $("#tombol_pengaturan").click(function(){
 	if ($(this).text() === "Pengaturan") {
         $(this).text("Tutup Pengaturan");
-		$("#isi_pengaturan").show(500);
+		$("#isi_pengaturan").show(200);
     } else {
         $(this).text("Pengaturan");
-		$("#isi_pengaturan").hide(500);
+		$("#isi_pengaturan").hide(200);
     }
 });
 
-var notifikasi_suara = true;
+$("#tombol_show_member").click(function(){
+	if ($(this).text() === "Tampilkan Member") {
+        $(this).text("Sembunyikan Member");
+		$("#member-online-container").show(200);
+    } else {
+        $(this).text("Tampilkan Member");
+		$("#member-online-container").hide(200);
+    }
+});
 
   $(".switch_theme").click(function(){
     $("body").toggleClass("dark");
@@ -299,11 +355,6 @@ var notifikasi_suara = true;
 /*
 // Ranah update konten
 */
-
-// variable - variable penting
-var panjang_data = 0; // nilai inisialisasi utk membandingkan jumlah message.
-var limit_pesan = 50; // jumlah awal message yang di-load 
-var add = 50; // jumlah pesan yang akan ditambahkan pas mencet tombol
 
 //to convert htmlentities using JS
 function htmlentities(string){
@@ -338,7 +389,7 @@ function getMessages(){
 		// Kalau nilai inisialisasinya masih (kosong), maka jangan update dan jangan bunyikan notifikasi 
 		if ( data > panjang_data ) {
 			updateMessages(); // kalau panjangnya barubah  berarti ada orang yg ngechat, maka update konten
-			if ( notifikasi_suara == true && panjang_data != 0) {
+			if ( notifikasi_suara == true && panjang_data != 0) { // bunyikan notifikasi
 				playSound("time-is-now");
 			}
 		}
@@ -350,19 +401,6 @@ function getMessages(){
 	});
 }
 
-function getMessagesIfSubmitedByUserHimself(){
-	$.get('count_messages.php', function(data){
-		// Kalau nilai inisialisasinya masih (kosong), maka jangan update dan jangan bunyikan notifikasi 
-		if ( data > panjang_data ) {
-			updateMessages(); // kalau panjangnya barubah  berarti ada orang yg ngechat, maka update konten
-			// if ( notifikasi_suara == true ) {
-			// 	playSound("time-is-now");
-			// }
-		}
-		panjang_data = data; // update nilai panjang
-	});
-}
-
 $("#tambahLimitPesan").click(function(){
 	$(".chatMessages").append('<ul class="media-list"><li class="kotak"><img class="text-center" width="30" src="../assets/img/ajax-loader-black.gif" style="margin-left: 48%;"></li></ul>');
 	limit_pesan = limit_pesan+add;
@@ -370,8 +408,9 @@ $("#tambahLimitPesan").click(function(){
 	setTimeout(function(){
 	  updateMessages(); // niar kelihatan loading hehe
 	  // $("#tambahLimitPesan").removeClass("hidden");
-	  $("#tambahLimitPesan").delay(100).removeClass("d-none");
+	  
 	}, 1500);
+	$("#tambahLimitPesan").delay(1500).removeClass("d-none");
 	
 	
 });
@@ -379,6 +418,7 @@ function updateMessages(){
 	$.get('chatMessages.php?limit_pesan='+limit_pesan, function(data){
 		$(".chatMessages").html(data); // update
 	});
+	
 	// console.log("sedang_updateMessages")
 }
 
@@ -407,18 +447,23 @@ function updateMessages(){
 
 	
 
-// Jalankan getMessages setiap 1 detik
+// Jalankan getMessages setiap 1/2 detik
 setInterval(function(){
 	getMessages();
 	if (panjang_data > limit_pesan) {
 		$("#tambahLimitPesan").removeClass("d-none");
 	}
-},1000);
+},500);
 
 // update chatroom reguler per 60 detik
 setInterval(function(){
 	updateMessages();
 },60000);
+
+// update status online tiap 15 detik
+setInterval(function(){
+	setOnline();
+},15000);
 
 
 </script>
