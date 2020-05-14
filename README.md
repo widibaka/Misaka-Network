@@ -17,6 +17,7 @@ Chat Engine Website made by otakus (LOL)
 # Fitur
 - Standar chat engine; misal post, reply, delete pesan chat.
 - Warna-warni utk membedakan user, mirip whatsapp
+- Informasi member yang online/offline
 # Dibangun Menggunakan
 * Native PHP
 * JS JQuery
@@ -33,7 +34,6 @@ Chat Engine Website made by otakus (LOL)
 - Notifikasi pesan yang belum dibaca
 - Instalasi Otomatis
 - User level
-- Informasi member yang online/offline
 - Cron Job untuk maintenance
 ************
 # Sumber
